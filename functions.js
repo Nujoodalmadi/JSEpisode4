@@ -7,6 +7,9 @@
  ****************************************************************/
 function getBookById(bookId, books) {
   // Your code goes here
+  //books.find(books.id === bookId)
+  //return console.log(books);
+  return books.find(book => book.id === bookId);
 }
 
 /**************************************************************
@@ -18,6 +21,9 @@ function getBookById(bookId, books) {
  ****************************************************************/
 function getAuthorByName(authorName, authors) {
   // Your code goes here
+  return authors.find(
+    author => author.name.toUpperCase() === authorName.toUpperCase()
+  );
 }
 
 /**************************************************************
@@ -28,6 +34,9 @@ function getAuthorByName(authorName, authors) {
  ****************************************************************/
 function bookCountsByAuthor(authors) {
   // Your code goes here
+  return authors.map(author => {
+    return { author: author.name, bookCount: author.books.length };
+  });
 }
 
 /**************************************************************
@@ -40,11 +49,15 @@ function bookCountsByAuthor(authors) {
 function booksByColor(books) {
   const colors = {};
 
-  // Your code goes here
-
+  books.forEach(book => {
+    if (colors[book.color]) {
+      colors[book.color].push(book.title);
+    } else {
+      colors[book.color] = [book.title];
+    }
+  });
   return colors;
 }
-
 /**************************************************************
  * titlesByAuthorName(authorName, authors, books):
  * - receives an authorName
@@ -53,8 +66,24 @@ function booksByColor(books) {
  * - returns an array of the titles of the books written by that author:
  *    ["The Hitchhikers Guide", "The Meaning of Liff"]
  ****************************************************************/
+
+// function titlesByAuthorName(authorName, authors, books) {
+//   const filterBooks = function(authorName, books) {
+//     return books.filter(book => book.authors.includes(authorName));
+//   };
+//   if (!getAuthorByName(authorName, authors)) return [];
+//   return filterBooks.map(book => book.title);
+// }
+
+// function titlesByAuthorName(authorName, authors, books) {
+//   if (!getAuthorByName(authorName, authors)) return [];
+//   return author.books.map(bookId => getBookById(bookId, books).title);
+// }
+
 function titlesByAuthorName(authorName, authors, books) {
-  // Your code goes here
+  const author = getAuthorByName(authorName, authors);
+  if (!author) return [];
+  return author.books.map(bookId => getBookById(bookId, books).title);
 }
 
 /**************************************************************
@@ -64,8 +93,17 @@ function titlesByAuthorName(authorName, authors, books) {
  *
  * Note: assume there will never be a tie
  ****************************************************************/
+
 function mostProlificAuthor(authors) {
-  // Your code goes here
+  let proAuthor = authors[0];
+
+  authors.forEach(author => {
+    author.books.length > proAuthor.books.length
+      ? (proAuthor = author)
+      : (proAuthor = proAuthor);
+  });
+
+  return proAuthor.name;
 }
 
 /**************************************************************
